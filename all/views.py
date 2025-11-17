@@ -40,17 +40,21 @@ def login_view(request):
 
         try:
             user = Profile.objects.get(username=username)
-            if check_password(password, user.password):  # works only if password is hashed
+            if check_password(password, user.password):
                 request.session["user_id"] = user.id
                 user.last_login = timezone.now()
                 user.save()
-                return redirect("home")
+                return redirect("login_success")  # <<< CHANGE HERE
+
             else:
                 error = "Wrong password"
         except Profile.DoesNotExist:
             error = "User does not exist"
 
     return render(request, "login.html", {"error": error})
+def login_success(request):
+    return render(request, "login_success.html")
+
 
 def admin_login(request):
     if request.method == "POST":
@@ -74,7 +78,7 @@ def admin_login(request):
     return render(request, "admin_login.html", {"form": form})
 
 def admin_dashboard(request):
-    users = Profile.objects.all().order_by('-last_login')  # most recent login first
+    users = Profile.objects.all().order_by('last_login')  # most recent first
     return render(request, "admin_dashboard.html", {"users": users})
 
 # ADD USER
