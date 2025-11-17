@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <style>
+        body { font-family: Arial; background: #eef2f5; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; }
+        h1 { color: #1d3557; }
+        .btn { padding: 10px 15px; border-radius: 5px; color: white; text-decoration: none; }
+        .add { background: purple; }
+        .logout { background: crimson; }
+        table { width: 100%; margin-top: 20px; border-collapse: collapse; background: white; border-radius: 10px; }
+        th { background: #1d3557; color: white; padding: 12px; }
+        td { padding: 10px; border-bottom: 1px solid #eee; }
+        .edit { background: green; padding: 5px 10px; color: white; border-radius: 4px; text-decoration: none; }
+        .delete { background: red; padding: 5px 10px; color: white; border-radius: 4px; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Admin Panel</h1>
+    <div>
+        <a class="btn add" href="{% url 'add_user' %}">Add User</a>
+        <a class="btn logout" href="{% url 'admin_logout' %}">Logout</a>
+    </div>
+</div>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Last Login</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+                {% if user.last_login %}
+                    {{ user.last_login|date:"Y-m-d H:i:s" }}
+                {% else %}
+                    Never
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
