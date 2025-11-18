@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.hashers import make_password
 
 class Profile(models.Model):
-    username = models.CharField(max_length=100)
+    username = models.CharField(max_length=100, unique=True)
     email = models.EmailField()
     password = models.CharField(max_length=100)
     last_login = models.DateTimeField(null=True, blank=True)

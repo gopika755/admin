@@ -1,39 +1,45 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import make_password,check_password
 from .models import AdminUser,Profile
 
 
 
+
 class SignupForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'placeholder': 'Password'
-    }))
-    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'placeholder': 'Confirm Password'
-    }))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
+    confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password'}))
 
     class Meta:
-        model = User
-        fields = ['username', 'email']
+        model = Profile
+        fields = ['username', 'email', 'password']
 
         widgets = {
             'username': forms.TextInput(attrs={'placeholder': 'Username'}),
             'email': forms.EmailInput(attrs={'placeholder': 'Email'}),
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm = cleaned_data.get("confirm_password")
+
+        if password != confirm:
+            self.add_error("confirm_password", "Passwords do not match")
+
+        return cleaned_data
+
     # Validate username is not used
     def clean_username(self):
         username = self.cleaned_data['username']
-        if User.objects.filter(username=username).exists():
+        if Profile.objects.filter(username=username).exists():
             raise ValidationError("Username already taken.")
         return username
 
     # Validate email is not used
     def clean_email(self):
         email = self.cleaned_data['email']
-        if User.objects.filter(email=email).exists():
+        if Profile.objects.filter(email=email).exists():
             raise ValidationError("Email already used.")
         return email
 

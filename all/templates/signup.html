@@ -9,29 +9,31 @@
         body {
             font-family: Arial, sans-serif;
             background: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
 
         .container {
             background: #fff;
+            padding: 30px;
             width: 350px;
-            padding: 25px;
-            border-radius: 12px;
+            border-radius: 10px;
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             font-weight: 600;
         }
 
-        .input-box {
+        .input-group {
             margin-bottom: 15px;
+            width: 100%;
         }
 
         label {
@@ -43,43 +45,51 @@
             width: 100%;
             padding: 10px;
             margin-top: 5px;
-            border: 1px solid #ccc;
             border-radius: 6px;
+            border: 1px solid #ccc;
             outline: none;
+            transition: 0.2s;
         }
 
         input:focus {
             border-color: #4a6cf7;
         }
 
-        .errorlist {
-            margin: 5px 0 0;
-            padding: 0;
-            list-style: none;
-        }
-
-        .errorlist li {
+        .error {
             color: red;
             font-size: 13px;
+            margin-top: 4px;
         }
 
         button {
             width: 100%;
             padding: 10px;
             background: #4a6cf7;
-            color: #fff;
             border: none;
-            border-radius: 6px;
+            color: white;
             font-size: 16px;
+            border-radius: 6px;
             cursor: pointer;
+            transition: 0.2s;
         }
 
         button:hover {
-            background: #3c57d4;
+            background: #3a59d6;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #4a6cf7;
+            text-decoration: none;
         }
     </style>
-
 </head>
+
 <body>
 
     <div class="container">
@@ -88,35 +98,43 @@
         <form method="POST">
             {% csrf_token %}
 
-            <div class="input-box">
+            <div class="input-group">
                 <label>Username</label>
-                {{ form.username }}
-                {{ form.username.errors }}
+                <input type="text" name="username" required>
+                {% if errors.username %}
+                    <p class="error">{{ errors.username }}</p>
+                {% endif %}
             </div>
 
-            <div class="input-box">
+            <div class="input-group">
                 <label>Email</label>
-                {{ form.email }}
-                {{ form.email.errors }}
+                <input type="email" name="email" required>
+                {% if errors.email %}
+                    <p class="error">{{ errors.email }}</p>
+                {% endif %}
             </div>
 
-            <div class="input-box">
+            <div class="input-group">
                 <label>Password</label>
-                {{ form.password }}
-                {{ form.password.errors }}
+                <input type="password" name="password" required>
+                {% if errors.password %}
+                    <p class="error">{{ errors.password }}</p>
+                {% endif %}
             </div>
 
-            <div class="input-box">
+            <div class="input-group">
                 <label>Confirm Password</label>
-                {{ form.confirm_password }}
-                {{ form.confirm_password.errors }}
+                <input type="password" name="confirm_password" required>
+                {% if errors.confirm_password %}
+                    <p class="error">{{ errors.confirm_password }}</p>
+                {% endif %}
             </div>
 
             <button type="submit">Sign Up</button>
+
             <div class="login-link">
                 Already have an account? <a href="{% url 'login' %}">Login</a>
             </div>
-
         </form>
     </div>
 

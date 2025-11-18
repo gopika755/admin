@@ -13,8 +13,23 @@
         table { width: 100%; margin-top: 20px; border-collapse: collapse; background: white; border-radius: 10px; }
         th { background: #1d3557; color: white; padding: 12px; }
         td { padding: 10px; border-bottom: 1px solid #eee; }
-        .edit { background: green; padding: 5px 10px; color: white; border-radius: 4px; text-decoration: none; }
-        .delete { background: red; padding: 5px 10px; color: white; border-radius: 4px; text-decoration: none; }
+
+        /* Visible Edit & Delete Buttons */
+        .edit {
+            background: #28a745;
+            padding: 6px 12px;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-right: 8px;
+        }
+        .delete {
+            background: #dc3545;
+            padding: 6px 12px;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -33,7 +48,7 @@
             <th>ID</th>
             <th>Username</th>
             <th>Email</th>
-            <th>Last Login</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -43,15 +58,16 @@
             <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
             <td>
-                {% if user.last_login %}
-                    {{ user.last_login|date:"Y-m-d H:i:s" }}
-                {% else %}
-                    Never
-                {% endif %}
+                <a href="{% url 'edit_user' user.id %}" class="edit">Edit</a>
+                <a href="{% url 'delete_user' user.id %}" class="delete"
+                   onclick="return confirm('Sure you wanna delete this user?');">
+                    Delete
+                </a>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+
 </body>
 </html>

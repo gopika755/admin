@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from all.models import AdminUser,Profile
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login,logout
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password,make_password
 from .forms import SignupForm, LoginForm,AdminLoginForm, AppUserForm
 from django.contrib import messages
 from django.utils import timezone
@@ -10,22 +9,23 @@ from django.utils import timezone
  
 
 
+
 def signup(request):
     if request.method == "POST":
-        form = SignupForm(request.POST)
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
 
-        if form.is_valid():
-            user = User.objects.create_user(
-                username=form.cleaned_data['username'],
-                email=form.cleaned_data['email'],
-                password=form.cleaned_data['password']
-            )
-            user.save()
-            return redirect("login")
-    else:
-        form = SignupForm()
+        # Save to Profile table with hashed password
+        Profile.objects.create(
+            username=username,
+            email=email,
+            password=make_password(password)
+        )
 
-    return render(request, "signup.html", {"form": form})
+        return redirect("login")
+
+    return render(request, "signup.html")
 
 
 def home(request):
@@ -39,15 +39,17 @@ def login_view(request):
         password = request.POST.get("password")
 
         try:
-            user = Profile.objects.get(username=username)
+            user = Profile.objects.filter(username=username).first()
+
             if check_password(password, user.password):
                 request.session["user_id"] = user.id
                 user.last_login = timezone.now()
                 user.save()
-                return redirect("login_success")  # <<< CHANGE HERE
+                return redirect("login_success")
 
             else:
                 error = "Wrong password"
+
         except Profile.DoesNotExist:
             error = "User does not exist"
 
