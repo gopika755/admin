@@ -1,129 +1,90 @@
 from django.shortcuts import render, redirect,get_object_or_404
-from all.models import AdminUser,Profile
-from django.contrib.auth import authenticate, login as auth_login,logout
-from django.contrib.auth.hashers import check_password,make_password
-from .forms import SignupForm, LoginForm,AdminLoginForm, AppUserForm
-from django.contrib import messages
-from django.utils import timezone
-
- 
-
-
+from all.models import Profile
+from django.contrib.auth import login as logout
+from django.contrib.auth.hashers import make_password
+from .forms import SignupForm, LoginForm,AdminLoginForm,AddUserForm,EditUserForm
 
 def signup(request):
     if request.method == "POST":
-        user=SignupForm
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
+        form = SignupForm(request.POST)
 
-        # Save to Profile table with hashed password
-        Profile.objects.create(
-            username=username,
-            email=email,
-            password=make_password(password)
-        )
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.password = make_password(form.cleaned_data['password'])
+            user.save()
+            return redirect("login")
+    else:
+        form = SignupForm()
 
-        return redirect("login")
-
-    return render(request, "signup.html")
+    return render(request, "signup.html", {"form": form})
 
 
 def home(request):
     return render(request, 'home.html')
 
-
 def login_view(request):
-    error = ""
     if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+        form = LoginForm(request.POST)
 
-        try:
-            user = Profile.objects.filter(username=username).first()
+        if form.is_valid():
+            user = form.user 
+            request.session['user_id'] = user.id
+            return redirect("login_success")
+    else:
+        form = LoginForm()
 
-            if check_password(password, Profile.password):
-                request.session["user_id"] = user.id
-                user.last_login = timezone.now()
-                user.save()
-                return redirect("login_success")
+    return render(request, "login.html", {"form": form})
 
-            else:
-                error = "Wrong password"
-
-        except Profile.DoesNotExist:
-            error = "User does not exist"
-
-    return render(request, "login.html", {"error": error})
 def login_success(request):
     return render(request, "login_success.html")
-
 
 def admin_login(request):
     if request.method == "POST":
         form = AdminLoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
 
-            try:
-                admin = AdminUser.objects.get(username=username)
-                if check_password(password, admin.password):
-                    request.session["admin_id"] = admin.id
-                    return redirect("admin_dashboard")
-                else:
-                    messages.error(request, "Wrong password.")
-            except AdminUser.DoesNotExist:
-                messages.error(request, "Admin does not exist.")
+        if form.is_valid():
+            admin = form.admin  # form already validated everything
+            request.session["admin_id"] = admin.id
+            return redirect("admin_dashboard")
     else:
         form = AdminLoginForm()
 
     return render(request, "admin_login.html", {"form": form})
 
 def admin_dashboard(request):
-    users = Profile.objects.all().order_by('last_login')  # most recent first
+    users = Profile.objects.all().order_by('last_login') 
     return render(request, "admin_dashboard.html", {"users": users})
 
-# ADD USER
+
 def add_user(request):
-    error = ""
     if request.method == "POST":
-        username = request.POST.get("username")
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        confirm = request.POST.get("confirm")
-
-        if password != confirm:
-            error = "Passwords do not match"
-        else:
-            Profile.objects.create(username=username, email=email, password=password)
+        form = AddUserForm(request.POST)
+        if form.is_valid():
+            form.save()
             return redirect("admin_dashboard")
+    else:
+        form = AddUserForm()
 
-    return render(request, "add_user.html", {"error": error})
-
-
-# EDIT USER
+    return render(request, "add_user.html", {"form": form})
+    
 def edit_user(request, user_id):
-    user = get_object_or_404(Profile,id=user_id)
-    error = ""
+    user = get_object_or_404(Profile, id=user_id)
 
     if request.method == "POST":
-        user.username = request.POST.get("username")
-        user.email = request.POST.get("email")
-        user.save()
-        return redirect("admin_dashboard")
+        form = EditUserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect("admin_dashboard")
+    else:
+        form = EditUserForm(instance=user)
 
-    return render(request, "edit_user.html", {"user": user, "error": error})
+    return render(request, "edit_user.html", {"form": form, "user": user})
 
-
-# DELETE USER
 def delete_user(request, user_id):
     user = get_object_or_404(Profile, id=user_id)
     user.delete()
     return redirect("admin_dashboard")
 
-
-# LOGOUT
 def admin_logout(request):
     logout(request)
-    return redirect("login")  # your login page
+    return redirect("login") 
