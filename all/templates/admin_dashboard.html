@@ -59,9 +59,7 @@
             <td>{{ user.email }}</td>
             <td>
                 <a href="{% url 'edit_user' user.id %}" class="edit">Edit</a>
-                <a href="{% url 'delete_user' user.id %}" class="delete"
-                   onclick="return confirm('Sure you wanna delete this user?');">
-                    Delete
+                <a href="{% url 'delete_user' user.id %}" class="delete">Delete
                 </a>
             </td>
         </tr>

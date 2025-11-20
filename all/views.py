@@ -12,6 +12,7 @@ from django.utils import timezone
 
 def signup(request):
     if request.method == "POST":
+        user=SignupForm
         username = request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -41,7 +42,7 @@ def login_view(request):
         try:
             user = Profile.objects.filter(username=username).first()
 
-            if check_password(password, user.password):
+            if check_password(password, Profile.password):
                 request.session["user_id"] = user.id
                 user.last_login = timezone.now()
                 user.save()
