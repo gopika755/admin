@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from all.models import Profile
-from django.contrib.auth import login as logout
+from django.contrib.auth import logout
 from django.contrib.auth.hashers import make_password
 from .forms import SignupForm, LoginForm,AdminLoginForm,AddUserForm,EditUserForm
 
@@ -43,7 +43,7 @@ def admin_login(request):
         form = AdminLoginForm(request.POST)
 
         if form.is_valid():
-            admin = form.admin  # form already validated everything
+            admin = form.admin  
             request.session["admin_id"] = admin.id
             return redirect("admin_dashboard")
     else:
@@ -51,10 +51,11 @@ def admin_login(request):
 
     return render(request, "admin_login.html", {"form": form})
 
+
+
 def admin_dashboard(request):
     users = Profile.objects.all().order_by('last_login') 
     return render(request, "admin_dashboard.html", {"users": users})
-
 
 def add_user(request):
     if request.method == "POST":
@@ -87,4 +88,4 @@ def delete_user(request, user_id):
 
 def admin_logout(request):
     logout(request)
-    return redirect("login") 
+    return redirect("admin_login") 

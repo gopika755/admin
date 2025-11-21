@@ -1,11 +1,12 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.contrib.auth.hashers import make_password,check_password
+from django.contrib.auth.hashers import check_password
 from .models import AdminUser,Profile
 
-
-
-
+def validate_no_numbers(value):
+    if any(char.isdigit() for char in value):
+        raise ValidationError("Username can't contain numbers.")
+    
 class SignupForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
     confirm_password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Confirm Password'}))
@@ -21,8 +22,13 @@ class SignupForm(forms.ModelForm):
 
     def clean_username(self):
         username = self.cleaned_data['username']
+
+        if any(char.isdigit() for char in username):
+            raise ValidationError("Username cannot contain numbers.")
+
         if Profile.objects.filter(username=username).exists():
             raise ValidationError("Username already taken.")
+
         return username
 
     def clean_email(self):
@@ -92,8 +98,14 @@ class AddUserForm(forms.ModelForm):
         model = Profile
         fields = ["username", "email", "password"]
         widgets = {
-            "password": forms.PasswordInput(),
+            "password": forms.PasswordInput()
         }
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if any(char.isdigit() for char in username):
+            raise ValidationError("Username cannot contain numbers.")
+        return username
 
     def clean(self):
         cleaned = super().clean()
@@ -101,10 +113,10 @@ class AddUserForm(forms.ModelForm):
         p2 = cleaned.get("confirm")
 
         if p1 != p2:
-            raise forms.ValidationError("Passwords do not match")
+            self.add_error("confirm", "Passwords do not match")
 
-        cleaned["password"] = make_password(p1)
         return cleaned
+
 
 
 class EditUserForm(forms.ModelForm):

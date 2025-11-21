@@ -2,11 +2,67 @@
 <html>
 <head>
     <title>Edit User</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f7fa;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+}
+
+    form {
+        background: white;
+        padding: 25px;
+        width: 350px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+}
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 22px;
+        color: #333;
+}
+
+    label {
+        font-weight: bold;
+        color: #555;
+}
+
+    input[type="text"],
+    input[type="email"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+}
+
+    button {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        background: #4a90e2;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: 0.2s;
+}
+
+    button:hover {
+        background: #357ab8;
+}
+    </style>
 </head>
 <body>
-
-<h2>Edit User</h2>
-
 <form method="POST">
     {% csrf_token %}
     <label>Username:</label><br>

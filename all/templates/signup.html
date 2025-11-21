@@ -104,37 +104,32 @@
         <form method="POST">
             {% csrf_token %}
 
-            <div class="input-group">
-                <label>Username</label>
-                <input type="text" name="username" required>
-                {% if errors.username %}
-                    <p class="error">{{ errors.username }}</p>
-                {% endif %}
+            {{ form.non_field_errors }}
+
+            <div>
+                {{ form.username.label_tag }}
+                {{ form.username }}
+                <p class="error">{{ form.username.errors }}</p>
             </div>
 
-            <div class="input-group">
-                <label>Email</label>
-                <input type="email" name="email" required>
-                {% if errors.email %}
-                    <p class="error">{{ errors.email }}</p>
-                {% endif %}
+            <div>
+                {{ form.email.label_tag }}
+                {{ form.email }}
+                <p class="error">{{ form.email.errors }}</p>
             </div>
 
-            <div class="input-group">
-                <label>Password</label>
-                <input type="password" name="password" required>
-                {% if errors.password %}
-                    <p class="error">{{ errors.password }}</p>
-                {% endif %}
+            <div>
+                {{ form.password.label_tag }}
+                {{ form.password }}
+                <p class="error">{{ form.password.errors }}</p>
             </div>
 
-            <div class="input-group">
-                <label>Confirm Password</label>
-                <input type="password" name="confirm_password" required>
-                {% if errors.confirm_password %}
-                    <p class="error">{{ errors.confirm_password }}</p>
-                {% endif %}
+            <div>
+                {{ form.confirm_password.label_tag }}
+                {{ form.confirm_password }}
+                <p class="error">{{ form.confirm_password.errors }}</p>
             </div>
+
 
             <button type="submit">Sign Up</button>
 
