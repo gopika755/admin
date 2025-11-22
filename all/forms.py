@@ -3,9 +3,6 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import check_password
 from .models import AdminUser,Profile
 
-def validate_no_numbers(value):
-    if any(char.isdigit() for char in value):
-        raise ValidationError("Username can't contain numbers.")
     
 class SignupForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password'}))
@@ -116,8 +113,6 @@ class AddUserForm(forms.ModelForm):
             self.add_error("confirm", "Passwords do not match")
 
         return cleaned
-
-
 
 class EditUserForm(forms.ModelForm):
     class Meta:

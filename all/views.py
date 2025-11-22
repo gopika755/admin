@@ -3,6 +3,8 @@ from all.models import Profile
 from django.contrib.auth import logout
 from django.contrib.auth.hashers import make_password
 from .forms import SignupForm, LoginForm,AdminLoginForm,AddUserForm,EditUserForm
+from django.views.decorators.cache import never_cache
+
 
 def signup(request):
     if request.method == "POST":
@@ -36,6 +38,9 @@ def login_view(request):
     return render(request, "login.html", {"form": form})
 
 def login_success(request):
+    if "user_id" not in request.session:
+        return redirect("login")
+
     return render(request, "login_success.html")
 
 def admin_login(request):
@@ -52,12 +57,18 @@ def admin_login(request):
     return render(request, "admin_login.html", {"form": form})
 
 
-
+@never_cache
 def admin_dashboard(request):
-    users = Profile.objects.all().order_by('last_login') 
+    if "admin_id" not in request.session:
+        return redirect("admin_login")
+
+    users = Profile.objects.all()
     return render(request, "admin_dashboard.html", {"users": users})
 
 def add_user(request):
+    if "admin_id" not in request.session:
+        return redirect("admin_login")
+
     if request.method == "POST":
         form = AddUserForm(request.POST)
         if form.is_valid():
@@ -82,6 +93,9 @@ def edit_user(request, user_id):
     return render(request, "edit_user.html", {"form": form, "user": user})
 
 def delete_user(request, user_id):
+    if "admin_id" not in request.session:
+        return redirect("admin_login")
+    
     user = get_object_or_404(Profile, id=user_id)
     user.delete()
     return redirect("admin_dashboard")
