@@ -36,10 +36,13 @@ class SignupForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        p1 = cleaned_data.get("password")
-        p2 = cleaned_data.get("confirm_password")
+        password1 = self.cleaned_data.get("password")
+        password2 = cleaned_data.get("confirm_password")
+        
+        if password1 and len(password1) < 8:
+            raise ValidationError("Password must be at least 8 characters long.")
 
-        if p1 and p2 and p1 != p2:
+        if password1 and password2 and password1 != password2:
             self.add_error('confirm_password', "Passwords do not match")
 
         return cleaned_data
@@ -106,10 +109,13 @@ class AddUserForm(forms.ModelForm):
 
     def clean(self):
         cleaned = super().clean()
-        p1 = cleaned.get("password")
-        p2 = cleaned.get("confirm")
+        password1=self.cleaned_data.get('password')
+        password2 = cleaned.get("confirm")
+        
+        if password1 and len(password1) < 8:
+            raise ValidationError("Password must be at least 8 characters long.")
 
-        if p1 != p2:
+        if password1 != password2:
             self.add_error("confirm", "Passwords do not match")
 
         return cleaned

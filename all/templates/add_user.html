@@ -3,85 +3,67 @@
 <head>
        <title>Add User</title>
     <style>
-        body {
-            font-family: "Poppins", sans-serif;
-            background: #f5f7fa;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
         form {
-            background: #ffffff;
-            padding: 30px;
+            width: 350px;
+            margin: 40px auto;
+            padding: 25px;
+            background: #fff;
             border-radius: 14px;
-            width: 380px;
-            box-shadow: 0px 8px 25px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.12);
+            font-family: "Poppins", sans-serif;
         }
 
-        h2 {
-            text-align: center;
-            font-size: 26px;
-            font-weight: 600;
-            margin-bottom: 25px;
-            color: #333;
-        }
-
-       
-        .input-group {
+        form p {
             margin-bottom: 18px;
         }
 
-        .input-group label {
+        form label {
             display: block;
             font-size: 14px;
+            margin-bottom: 6px;
+            color: #333;
             font-weight: 500;
-            margin-bottom: 5px;
-            color: #444;
         }
 
-        
-        .input-group input {
+        form input {
             width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #d4d7dd;
-            border-radius: 10px;
-            font-size: 15px;
+            padding: 10px 12px;
+            border: 1.5px solid #cfcfcf;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        form input:focus {
+            border-color: #4b7bec;
             outline: none;
-            transition: 0.2s;
+            box-shadow: 0 0 5px rgba(75, 123, 236, 0.3);
         }
 
-        .input-group input:focus {
-            border-color: #4b70f5;
-            box-shadow: 0 0 4px rgba(75,112,245,0.3);
-        }
-
-        
-        .error {
-            color: #e63946;
+        .errorlist {
+            color: #d9534f;
+            margin: 5px 0 0;
+            padding: 0;
+            list-style: none;
             font-size: 13px;
-            margin-top: 4px;
         }
 
-       
-        button {
+        form button {
             width: 100%;
-            padding: 12px;
-            background: #4b70f5;
+            background: #4b7bec;
             color: white;
+            padding: 12px;
+            font-size: 15px;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.2s ease;
             margin-top: 10px;
         }
 
-        button:hover {
-            background: #3657d6;
+        form button:hover {
+            background: #3867d6;
         }
 
     </style>
@@ -94,38 +76,7 @@
 
 <form method="POST">
     {% csrf_token %}
-
-    <div class="input-group">
-        {{ form.username.label_tag }}
-        {{ form.username }}
-        {% for err in form.username.errors %}
-            <p class="error">{{ err }}</p>
-        {% endfor %}
-    </div>
-
-    <div class="input-group">
-        {{ form.email.label_tag }}
-        {{ form.email }}
-        {% for err in form.email.errors %}
-            <p class="error">{{ err }}</p>
-        {% endfor %}
-    </div>
-
-    <div class="input-group">
-        {{ form.password.label_tag }}
-        {{ form.password }}
-        {% for err in form.password.errors %}
-            <p class="error">{{ err }}</p>
-        {% endfor %}
-    </div>
-
-    <div class="input-group">
-        {{ form.confirm.label_tag }}
-        {{ form.confirm }}
-        {% for err in form.confirm.errors %}
-            <p class="error">{{ err }}</p>
-        {% endfor %}
-    </div>
+    {{form.as_p}}
 
     <button type="submit">Add User</button>
 </form>

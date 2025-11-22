@@ -103,40 +103,13 @@
 
         <form method="POST">
             {% csrf_token %}
-
-            {{ form.non_field_errors }}
-
-            <div>
-                {{ form.username.label_tag }}
-                {{ form.username }}
-                <p class="error">{{ form.username.errors }}</p>
-            </div>
-
-            <div>
-                {{ form.email.label_tag }}
-                {{ form.email }}
-                <p class="error">{{ form.email.errors }}</p>
-            </div>
-
-            <div>
-                {{ form.password.label_tag }}
-                {{ form.password }}
-                <p class="error">{{ form.password.errors }}</p>
-            </div>
-
-            <div>
-                {{ form.confirm_password.label_tag }}
-                {{ form.confirm_password }}
-                <p class="error">{{ form.confirm_password.errors }}</p>
-            </div>
-
-
+            {{ form.as_p }}
             <button type="submit">Sign Up</button>
-
+ </form>
             <div class="login-link">
                 Already have an account? <a href="{% url 'login' %}">Login</a>
             </div>
-        </form>
+        
     </div>
 
 </body>

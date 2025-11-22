@@ -65,12 +65,7 @@
 <body>
 <form method="POST">
     {% csrf_token %}
-    <label>Username:</label><br>
-    <input type="text" name="username" value="{{ user.username }}" required><br><br>
-
-    <label>Email:</label><br>
-    <input type="email" name="email" value="{{ user.email }}" required><br><br>
-
+    {{ form.as_p}}
     <button type="submit">Save Changes</button>
 </form>
 
