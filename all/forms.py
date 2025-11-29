@@ -40,7 +40,7 @@ class SignupForm(forms.ModelForm):
         password2 = cleaned_data.get("confirm_password")
         
         if password1 and len(password1) < 8:
-            raise ValidationError("Password must be at least 8 characters long.")
+            raise ValidationError("Password must be at least 8 characters.")
 
         if password1 and password2 and password1 != password2:
             self.add_error('confirm_password', "Passwords do not match")
@@ -103,8 +103,13 @@ class AddUserForm(forms.ModelForm):
 
     def clean_username(self):
         username = self.cleaned_data['username']
+
         if any(char.isdigit() for char in username):
             raise ValidationError("Username cannot contain numbers.")
+
+        if Profile.objects.filter(username=username).exists():
+            raise ValidationError("Username already taken.")
+
         return username
 
     def clean(self):
@@ -123,7 +128,24 @@ class AddUserForm(forms.ModelForm):
 class EditUserForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ["username", "email"]
+        fields = ['username', 'email']
+
+        widgets = {
+            'username': forms.TextInput(attrs={'placeholder': 'Username'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Email'}),
+        }
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+
+        if any(char.isdigit() for char in username):
+            raise ValidationError("Username cannot contain numbers.")
+
+        if Profile.objects.filter(username=username).exists():
+            raise ValidationError("Username already taken.")
+
+        return username
+        
 class AppUserForm(forms.ModelForm):
    class Meta:
         model = Profile

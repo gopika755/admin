@@ -5,7 +5,7 @@ from django.contrib.auth.hashers import make_password
 from .forms import SignupForm, LoginForm,AdminLoginForm,AddUserForm,EditUserForm
 from django.views.decorators.cache import never_cache
 
-
+@never_cache
 def signup(request):
     if request.method == "POST":
         form = SignupForm(request.POST)
@@ -23,7 +23,7 @@ def signup(request):
 
 def home(request):
     return render(request, 'home.html')
-
+@never_cache
 def login_view(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
