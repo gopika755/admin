@@ -42,7 +42,7 @@ def login_success(request):
         return redirect("login")
 
     return render(request, "login_success.html")
-
+@never_cache
 def admin_login(request):
     if request.method == "POST":
         form = AdminLoginForm(request.POST)
